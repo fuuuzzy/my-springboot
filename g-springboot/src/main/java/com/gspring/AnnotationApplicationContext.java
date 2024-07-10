@@ -1,7 +1,5 @@
 package com.gspring;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 import com.gspring.gannotation.*;
 import com.gspring.gannotation.springmvc.Controller;
 import com.gspring.gioc.BeanDefinition;
@@ -12,6 +10,8 @@ import com.gspring.gioc.aware.BeanPostProcessor;
 import com.gspring.gioc.aware.InitializingBean;
 import com.gspring.mybaties.MapperProxyFactory;
 import com.gspring.mybaties.annotation.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -31,7 +31,8 @@ public class AnnotationApplicationContext {
     /**
      * 日志
      */
-    private static final Log LOG = LogFactory.getLog(AnnotationApplicationContext.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AnnotationApplicationContext.class);
+
     /**
      * 配置类
      */

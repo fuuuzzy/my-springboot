@@ -1,8 +1,8 @@
 package com.gspring.boot.autoconfiguration.impl;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 import com.gspring.boot.autoconfiguration.SelectImportClass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,7 +17,7 @@ import java.util.Properties;
  */
 public class DefaultSelectImportClass implements SelectImportClass {
 
-    private static final Log LOG = LogFactory.getLog(DefaultSelectImportClass.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultSelectImportClass.class);
 
     /**
      * 获取需要导入的类
@@ -40,7 +40,7 @@ public class DefaultSelectImportClass implements SelectImportClass {
                 try {
                     classList.add(Class.forName(v.toString()));
                 } catch (ClassNotFoundException e) {
-                    LOG.info("过滤掉不需要的类");
+                    logger.info("过滤掉不需要的类");
                 }
             });
         }

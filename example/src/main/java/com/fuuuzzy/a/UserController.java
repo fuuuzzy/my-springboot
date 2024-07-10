@@ -15,6 +15,7 @@ import java.util.List;
 @Controller("/user")
 public class UserController {
 
+
     @Autowired
     private UserService userService;
 

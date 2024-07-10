@@ -17,6 +17,6 @@ public interface UserMapper {
      *
      * @return {@link List<User>} 用户列表
      */
-    @Select("select * from test_user")
+    @Select("select * from user")
     List<User> getUser();
 }

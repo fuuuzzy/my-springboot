@@ -14,7 +14,9 @@ import java.util.List;
  */
 @Service
 public class UserService {
+
     private static final Log LOG = LogFactory.getLog(UserService.class);
+
     @Autowired
     private UserMapper userMapper;
 

@@ -1,11 +1,11 @@
 package com.gspring.mvc;
 
-import com.alibaba.druid.support.logging.Log;
-import com.alibaba.druid.support.logging.LogFactory;
 import com.alibaba.fastjson.JSON;
 import com.gspring.AnnotationApplicationContext;
 import com.gspring.gannotation.springmvc.*;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -31,7 +31,8 @@ public class MyDispatcherServlet extends HttpServlet {
     /**
      * 日志
      */
-    private static final Log LOG = LogFactory.getLog(MyDispatcherServlet.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MyDispatcherServlet.class);
+
     /**
      * 上下文
      */

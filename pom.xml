@@ -75,6 +75,30 @@
                 <artifactId>spring-aop</artifactId>
                 <version>5.3.19</version>
             </dependency>
+
+            <!-- 添加 SLF4J 依赖 -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.32</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>1.7.32</version>
+            </dependency>
+            <!-- 添加 Logback 依赖 -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.2.3</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>
