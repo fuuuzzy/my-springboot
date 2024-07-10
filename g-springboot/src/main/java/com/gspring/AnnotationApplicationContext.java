@@ -4,7 +4,6 @@ import com.gspring.gannotation.*;
 import com.gspring.gannotation.springmvc.Controller;
 import com.gspring.gioc.BeanDefinition;
 import com.gspring.gioc.ScopeEnum;
-import com.gspring.gioc.aware.AspectBeanPostProcessor;
 import com.gspring.gioc.aware.BeanNameAware;
 import com.gspring.gioc.aware.BeanPostProcessor;
 import com.gspring.gioc.aware.InitializingBean;
@@ -55,19 +54,7 @@ public class AnnotationApplicationContext {
      * bean后置处理器
      */
     private final List<BeanPostProcessor> beanPostProcessorList = new ArrayList<>();
-    /**
-     * 切面类集合
-     */
-    private final List<Class<?>> aspectList = new ArrayList<>();
 
-    /**
-     * 切点集合
-     */
-    private final Set<String> pointList = new HashSet<>();
-    /**
-     * 切面类的后置处理器
-     */
-    private final AspectBeanPostProcessor aspectBeanPostProcessor = new AspectBeanPostProcessor();
 
     /**
      * 读取的类的集合
@@ -120,13 +107,9 @@ public class AnnotationApplicationContext {
         singletonObjects.clear();
         beanDefinitionMap.clear();
         beanPostProcessorList.clear();
-        aspectList.clear();
-        pointList.clear();
         //有springBoot注解，默认扫描当前包下的所有类
         handleSpringBootAnnotation();
         isAnnotationComponentScan(configClass);
-        aspectBeanPostProcessor.setAspectList(aspectList);
-        aspectBeanPostProcessor.setPointList(pointList);
         //注入Bean
         if (!beanDefinitionMap.isEmpty()) {
             inversionOfControl();
@@ -398,8 +381,6 @@ public class AnnotationApplicationContext {
         for (BeanPostProcessor beanPostProcessor : beanPostProcessorList) {
             instant = beanPostProcessor.postProcessAfterInitialization(instant, beanName);
         }
-        //处理切面类
-        instant = aspectBeanPostProcessor.postProcessAfterInitialization(instant, beanName);
         return instant;
     }
 
@@ -509,9 +490,6 @@ public class AnnotationApplicationContext {
         if (!flag || "".equals(beanName)) {
             return;
         }
-        if (configClass.isAnnotationPresent(EnableAspectAutoProxy.class) && concurrentLoadClazz.isAnnotationPresent(Aspect.class)) {
-            handleAspect(concurrentLoadClazz);
-        }
         //判断该类是否为BeanPostProcessor后置处理器
         if (BeanPostProcessor.class.isAssignableFrom(concurrentLoadClazz)) {
             BeanPostProcessor beanPostProcessor = (BeanPostProcessor) concurrentLoadClazz.getDeclaredConstructor().newInstance();
@@ -576,27 +554,6 @@ public class AnnotationApplicationContext {
         }
         analysisBeanAnnotation(concurrentLoadClazz);
         return beanName;
-    }
-
-    /**
-     * 处理是否为切面类
-     *
-     * @param concurrentLoadClazz 类
-     */
-    private void handleAspect(Class<?> concurrentLoadClazz) {
-        //切面类
-        Method[] methods = concurrentLoadClazz.getDeclaredMethods();
-        for (Method method : methods) {
-            if (method.isAnnotationPresent(Point.class)) {
-                Point annotation = method.getAnnotation(Point.class);
-                String pointValue = annotation.value();
-                if ("@annotation(Zgh)".equals(pointValue)) {
-                    pointValue = pointValue.substring(pointValue.indexOf("("), pointValue.indexOf(")"));
-                    pointList.add(pointValue);
-                }
-            }
-        }
-        aspectList.add(concurrentLoadClazz);
     }
 
     /**
