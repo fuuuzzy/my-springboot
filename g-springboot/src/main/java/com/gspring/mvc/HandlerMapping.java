@@ -38,6 +38,5 @@ public class HandlerMapping {
      */
     private Map<Integer, String> methodParams;
 
-    private List<String> urlParams;
 
 }

@@ -19,7 +19,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -99,6 +98,7 @@ public class MyDispatcherServlet extends HttpServlet {
             handlerMapping = handlerMappingMap.get(str);
 
             if (null == handlerMapping) {
+                response.setHeader("Content-Type", "application/json");
                 response.getWriter().write("404 Not  Found");
                 return;
             }
@@ -170,13 +170,22 @@ public class MyDispatcherServlet extends HttpServlet {
                 paramArr[i] = response;
             } else if (clazz == String.class) {
                 Map<Integer, String> methodParam = handlerMapping.getMethodParams();
-                paramArr[i] = request.getParameter(methodParam.get(i));
+                if (clazz.isAnnotationPresent(PathVariable.class)) {
+                    paramArr[i] = methodParam.get(i);
+                }else {
+                    paramArr[i] = request.getParameter(methodParam.get(i));
+                }
             } else if (clazz == Integer.class) {
                 Map<Integer, String> methodParams = handlerMapping.getMethodParams();
-                paramArr[i] = Integer.valueOf(request.getParameter(methodParams.get(i)));
+                if (clazz.isAnnotationPresent(PathVariable.class)) {
+                    paramArr[i] = Integer.valueOf(methodParams.get(i));
+                }else {
+                    paramArr[i] = Integer.valueOf(request.getParameter(methodParams.get(i)));
+                }
             } else if (clazz == HttpSession.class) {
                 paramArr[i] = session;
-            } else {
+            }
+            else {
                 LOG.info("暂不支持的参数类型");
             }
         }
@@ -251,18 +260,6 @@ public class MyDispatcherServlet extends HttpServlet {
             GetMapping wolfGetMapping = method.getDeclaredAnnotation(GetMapping.class);
             //拼成完成的请求路径
             requestUrl.append("/").append(wolfGetMapping.value());
-            //不考虑正则匹配路径/xx/* 的情况，只考虑完全匹配的情况
-            List<String> paramList = new ArrayList<>();
-            if (requestUrl.toString().contains("/{")) {
-                String str = requestUrl.toString();
-                int lastIndex = str.indexOf("}");
-                while (lastIndex != -1) {
-                    String substring = str.substring(str.indexOf("{") + 1, lastIndex);
-                    paramList.add(substring);
-                    str = str.substring(lastIndex + 1);
-                    lastIndex = str.indexOf("}");
-                }
-            }
             if (handlerMappingMap.containsKey(requestUrl.toString())) {
                 LOG.info("重复路径");
                 return;
@@ -296,7 +293,6 @@ public class MyDispatcherServlet extends HttpServlet {
             handlerMapping.setTarget(entry.getValue());
             //请求方法的参数信息
             handlerMapping.setMethodParams(methodParam);
-            handlerMapping.setUrlParams(paramList);
             //存入hashmap
             handlerMappingMap.put(requestUrl.toString(), handlerMapping);
         }
